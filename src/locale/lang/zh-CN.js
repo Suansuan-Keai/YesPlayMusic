@@ -125,6 +125,10 @@ export default {
       high: "极高",
       lossless: "无损",
     },
+    cacheLimit: {
+      text: "歌曲缓存上限",
+      none: "无限制",
+    },
     lyricFontSize: {
       text: "歌词字体大小",
       small: "小",
@@ -151,6 +155,7 @@ export default {
     showPlaylistsByAppleMusic: "首页显示来自 Apple Music 的歌单",
     enableDiscordRichPresence: "启用 Discord Rich Presence",
     enableGlobalShortcut: "启用全局快捷键",
+    showLibraryDefault: "启动后显示音乐库",
   },
   contextMenu: {
     play: "播放",

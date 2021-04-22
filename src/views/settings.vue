@@ -112,6 +112,22 @@
       </div>
       <div class="item" v-if="isElectron">
         <div class="left">
+          <div class="title"> {{ $t("settings.cacheLimit.text") }} </div>
+        </div>
+        <div class="right">
+          <select v-model="cacheLimit">
+            <option :value="false">
+              {{ $t("settings.cacheLimit.none") }}
+            </option>
+            <option :value="512"> 500MB </option>
+            <option :value="1024"> 1GB </option>
+            <option :value="2048"> 2GB </option>
+            <option :value="4096"> 4GB </option>
+          </select>
+        </div>
+      </div>
+      <div class="item" v-if="isElectron">
+        <div class="left">
           <div class="title">
             {{
               $t("settings.cacheCount", {
@@ -214,6 +230,23 @@
             >断开连接
           </button>
           <button @click="lastfmConnect()" v-else> 授权连接 </button>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="left">
+          <div class="title"> {{ $t("settings.showLibraryDefault") }}</div>
+        </div>
+        <div class="right">
+          <div class="toggle">
+            <input
+              type="checkbox"
+              name="show-library-default"
+              id="show-library-default"
+              v-model="showLibraryDefault"
+            />
+            <label for="show-library-default"></label>
+          </div>
         </div>
       </div>
 
@@ -518,6 +551,28 @@ export default {
       set(value) {
         this.$store.commit("updateSettings", {
           key: "enableGlobalShortcut",
+          value,
+        });
+      },
+    },
+    showLibraryDefault: {
+      get() {
+        return this.settings.showLibraryDefault || false;
+      },
+      set(value) {
+        this.$store.commit("updateSettings", {
+          key: "showLibraryDefault",
+          value,
+        });
+      },
+    },
+    cacheLimit: {
+      get() {
+        return this.settings.cacheLimit || false;
+      },
+      set(value) {
+        this.$store.commit("updateSettings", {
+          key: "cacheLimit",
           value,
         });
       },
