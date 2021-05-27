@@ -37,9 +37,9 @@
               <span
                 v-for="(ar, index) in currentTrack.ar"
                 :key="ar.id"
-                @click="goToArtist(ar.id)"
+                @click="ar.id !== 0 && goToArtist(ar.id)"
               >
-                <span class="ar">{{ ar.name }}</span
+                <span :class="ar.id !== 0 ? 'ar' : ''"> {{ ar.name }} </span
                 ><span v-if="index !== currentTrack.ar.length - 1">, </span>
               </span>
             </div>
@@ -97,7 +97,7 @@
         <div class="container" @click.stop>
           <button-icon
             v-if="osdState"
-            :title="$t('player.osdlyrics')"
+            :title="$t('player.osdLyrics')"
             @click.native="toggleOSDLyrics"
             ><svg-icon icon-class="osd-lyrics"
           /></button-icon>
