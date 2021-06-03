@@ -49,9 +49,11 @@
             @click="updateCurrentTab('playlists')"
           >
             <span class="text">{{
-              { all: '全部歌单', mine: '创建的歌单', liked: '收藏的歌单' }[
-                playlistFilter
-              ]
+              {
+                all: $t('contextMenu.allPlaylists'),
+                mine: $t('contextMenu.minePlaylists'),
+                liked: $t('contextMenu.likedPlaylists'),
+              }[playlistFilter]
             }}</span>
             <span class="icon" @click.stop="openPlaylistTabMenu"
               ><svg-icon icon-class="dropdown"
@@ -122,10 +124,16 @@
     </div>
 
     <ContextMenu ref="playlistTabMenu">
-      <div class="item" @click="changePlaylistFilter('all')">全部歌单</div>
+      <div class="item" @click="changePlaylistFilter('all')">{{
+        $t('contextMenu.allPlaylists')
+      }}</div>
       <hr />
-      <div class="item" @click="changePlaylistFilter('mine')">创建的歌单</div>
-      <div class="item" @click="changePlaylistFilter('liked')">收藏的歌单</div>
+      <div class="item" @click="changePlaylistFilter('mine')">{{
+        $t('contextMenu.minePlaylists')
+      }}</div>
+      <div class="item" @click="changePlaylistFilter('liked')">{{
+        $t('contextMenu.likedPlaylists')
+      }}</div>
     </ContextMenu>
   </div>
 </template>
@@ -136,6 +144,7 @@ import { getLyric } from '@/api/track';
 import { randomNum, dailyTask } from '@/utils/common';
 import { isAccountLoggedIn } from '@/utils/auth';
 import NProgress from 'nprogress';
+import locale from '@/locale';
 
 import ContextMenu from '@/components/ContextMenu.vue';
 import TrackList from '@/components/TrackList.vue';
@@ -228,7 +237,7 @@ export default {
     },
     updateCurrentTab(tab) {
       if (!isAccountLoggedIn() && tab !== 'playlists') {
-        this.showToast('此操作需要登录网易云账号');
+        this.showToast(locale.t('toast.needToLogin'));
         return;
       }
       this.currentTab = tab;
@@ -247,7 +256,7 @@ export default {
     },
     openAddPlaylistModal() {
       if (!isAccountLoggedIn()) {
-        this.showToast('此操作需要登录网易云账号');
+        this.showToast(locale.t('toast.needToLogin'));
         return;
       }
       this.updateModal({
