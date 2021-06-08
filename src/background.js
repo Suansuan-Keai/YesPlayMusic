@@ -21,6 +21,10 @@ import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import express from 'express';
 import expressProxy from 'express-http-proxy';
 import Store from 'electron-store';
+const clc = require('cli-color');
+const log = text => {
+  console.log(`${clc.blueBright('[background.js]')} ${text}`);
+};
 
 class Background {
   constructor() {
@@ -41,7 +45,7 @@ class Background {
   }
 
   init() {
-    console.log('initializing');
+    log('initializing');
 
     // Make sure the app is singleton.
     if (!app.requestSingleInstanceLock()) return app.quit();
@@ -84,7 +88,7 @@ class Background {
   }
 
   createExpressApp() {
-    console.log('creating express app');
+    log('creating express app');
 
     const expressApp = express();
     expressApp.use('/', express.static(__dirname + '/'));
@@ -105,12 +109,12 @@ class Background {
   }
 
   createWindow() {
-    console.log('creating app window');
+    log('creating app window');
 
     const appearance = this.store.get('settings.appearance');
     const showLibraryDefault = this.store.get('settings.showLibraryDefault');
 
-    this.window = new BrowserWindow({
+    const options = {
       width: this.store.get('window.width') || 1440,
       height: this.store.get('window.height') || 840,
       minWidth: 1080,
@@ -118,6 +122,7 @@ class Background {
       titleBarStyle: 'hiddenInset',
       frame: process.platform !== 'win32',
       title: 'YesPlayMusic',
+      show: false,
       webPreferences: {
         webSecurity: false,
         nodeIntegration: true,
@@ -130,7 +135,14 @@ class Background {
         appearance === 'dark'
           ? '#222'
           : '#fff',
-    });
+    };
+
+    if (this.store.get('window.x') && this.store.get('window.y')) {
+      options.x = this.store.get('window.x');
+      options.y = this.store.get('window.y');
+    }
+
+    this.window = new BrowserWindow(options);
 
     // hide menu bar on Microsoft Windows and Linux
     this.window.setMenuBarVisibility(false);
@@ -219,6 +231,8 @@ class Background {
   }
 
   checkForUpdates() {
+    if (process.env.NODE_ENV === 'development') return;
+    log('checkForUpdates');
     autoUpdater.checkForUpdatesAndNotify();
 
     const showNewVersionMessage = info => {
@@ -247,12 +261,12 @@ class Background {
 
   handleOSDEvents() {
     this.osdlyrics.once('ready-to-show', () => {
-      console.log('OSD ready-to-show event');
+      log('OSD ready-to-show event');
       this.osdlyrics.show();
     });
 
     this.osdlyrics.on('closed', e => {
-      console.log('OSD close event');
+      log('OSD close event');
       this.osdlyrics = null;
     });
 
@@ -271,12 +285,12 @@ class Background {
 
   handleWindowEvents() {
     this.window.once('ready-to-show', () => {
-      console.log('windows ready-to-show event');
+      log('windows ready-to-show event');
       this.window.show();
     });
 
     this.window.on('close', e => {
-      console.log('windows close event');
+      log('windows close event');
       if (this.willQuitApp) {
         /* the user tried to quit the app */
         this.window = null;
@@ -288,9 +302,12 @@ class Background {
       }
     });
 
-    this.window.on('resize', () => {
-      let { height, width } = this.window.getBounds();
-      this.store.set('window', { height, width });
+    this.window.on('resized', () => {
+      this.store.set('window', this.window.getBounds());
+    });
+
+    this.window.on('moved', () => {
+      this.store.set('window', this.window.getBounds());
     });
 
     this.window.on('minimize', () => {
@@ -304,7 +321,7 @@ class Background {
 
     this.window.webContents.on('new-window', function (e, url) {
       e.preventDefault();
-      console.log('open url');
+      log('open url');
       const excludeHosts = ['www.last.fm'];
       const exclude = excludeHosts.find(host => url.includes(host));
       if (exclude) {
@@ -332,7 +349,7 @@ class Background {
       // This method will be called when Electron has finished
       // initialization and is ready to create browser windows.
       // Some APIs can only be used after this event occurs.
-      console.log('app ready event');
+      log('app ready event');
 
       // for development
       if (process.env.NODE_ENV === 'development') {
@@ -341,6 +358,9 @@ class Background {
 
       // create window
       this.createWindow();
+      this.window.once('ready-to-show', () => {
+        this.window.show();
+      });
       this.handleWindowEvents();
 
       this.initOSDLyrics();
@@ -359,7 +379,7 @@ class Background {
       const proxyRules = this.store.get('proxy');
       if (proxyRules) {
         this.window.webContents.session.setProxy({ proxyRules }, result => {
-          console.log('finished setProxy', result);
+          log('finished setProxy', result);
         });
       }
 
@@ -398,7 +418,7 @@ class Background {
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
-      console.log('app activate event');
+      log('app activate event');
       if (this.window === null) {
         this.createWindow();
       } else {

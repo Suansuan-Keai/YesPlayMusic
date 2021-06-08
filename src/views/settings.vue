@@ -1,5 +1,5 @@
 <template>
-  <div class="settings">
+  <div class="settings-page">
     <div class="container">
       <div v-if="showUserInfo" class="user">
         <div class="left">
@@ -95,7 +95,7 @@
         </div>
       </div>
 
-      <h3>缓存</h3>
+      <h3 v-if="isElectron">缓存</h3>
       <div v-if="isElectron" class="item">
         <div class="left">
           <div class="title">
@@ -177,6 +177,7 @@
             <option :value="true">
               {{ $t('settings.lyricsBackground.on') }}
             </option>
+            <option value="blur"> 模糊封面 </option>
             <option value="dynamic">
               {{ $t('settings.lyricsBackground.dynamic') }}
             </option>
@@ -223,7 +224,7 @@
           <button v-else @click="lastfmConnect()"> 授权连接 </button>
         </div>
       </div>
-      <div class="item">
+      <div v-if="isElectron" class="item">
         <div class="left">
           <div class="title"
             >启用
@@ -318,22 +319,6 @@
           </div>
         </div>
       </div>
-      <div v-if="isElectron" class="item">
-        <div class="left">
-          <div class="title"> {{ $t('settings.enableGlobalShortcut') }}</div>
-        </div>
-        <div class="right">
-          <div class="toggle">
-            <input
-              id="enable-enable-global-shortcut"
-              v-model="enableGlobalShortcut"
-              type="checkbox"
-              name="enable-enable-global-shortcut"
-            />
-            <label for="enable-enable-global-shortcut"></label>
-          </div>
-        </div>
-      </div>
       <div class="item">
         <div class="left">
           <div class="title" style="transform: scaleX(-1)">🐈️ 🏳️‍🌈</div>
@@ -382,6 +367,26 @@
             :disabled="proxyProtocol === 'noProxy'"
           />
           <button @click="sendProxyConfig">更新代理</button>
+        </div>
+      </div>
+
+      <div v-if="isElectron">
+        <h3>快捷键</h3>
+        <div class="item">
+          <div class="left">
+            <div class="title"> {{ $t('settings.enableGlobalShortcut') }}</div>
+          </div>
+          <div class="right">
+            <div class="toggle">
+              <input
+                id="enable-enable-global-shortcut"
+                v-model="enableGlobalShortcut"
+                type="checkbox"
+                name="enable-enable-global-shortcut"
+              />
+              <label for="enable-enable-global-shortcut"></label>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -761,9 +766,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.settings {
+.settings-page {
   display: flex;
   justify-content: center;
+  margin-top: 32px;
 }
 .container {
   margin-top: 24px;

@@ -1,6 +1,9 @@
 <template>
   <div v-show="show" class="home">
-    <div v-if="settings.showPlaylistsByAppleMusic !== false" class="index-row">
+    <div
+      v-if="settings.showPlaylistsByAppleMusic !== false"
+      class="index-row first-row"
+    >
       <div class="title"> by Apple Music </div>
       <CoverRow
         :type="'playlist'"
@@ -103,6 +106,7 @@ export default {
   },
   activated() {
     this.loadData();
+    this.$parent.$refs.scrollbar.restorePosition();
   },
   methods: {
     loadData() {
@@ -146,6 +150,9 @@ export default {
 <style lang="scss" scoped>
 .index-row {
   margin-top: 54px;
+}
+.index-row.first-row {
+  margin-top: 32px;
 }
 .playlists {
   display: flex;

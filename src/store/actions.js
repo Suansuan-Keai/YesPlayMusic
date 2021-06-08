@@ -9,6 +9,8 @@ import {
   likedAlbums,
   likedArtists,
   likedMVs,
+  cloudDisk,
+  userAccount,
 } from '@/api/user';
 
 export default {
@@ -144,6 +146,25 @@ export default {
           name: 'mvs',
           data: result.data,
         });
+      }
+    });
+  },
+  fetchCloudDisk: ({ commit }) => {
+    if (!isAccountLoggedIn()) return;
+    return cloudDisk().then(result => {
+      if (result.data) {
+        commit('updateLikedXXX', {
+          name: 'cloudDisk',
+          data: result.data,
+        });
+      }
+    });
+  },
+  fetchUserProfile: ({ commit }) => {
+    if (!isAccountLoggedIn()) return;
+    return userAccount().then(result => {
+      if (result.code === 200) {
+        commit('updateData', { key: 'user', value: result.profile });
       }
     });
   },

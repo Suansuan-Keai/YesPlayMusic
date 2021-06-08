@@ -1,5 +1,5 @@
 <template>
-  <div v-show="show" class="artist">
+  <div v-show="show" class="artist-page">
     <div class="artist-info">
       <div class="head">
         <img :src="artist.img1v1Url | resizeImage(1024)" />
@@ -261,18 +261,19 @@ export default {
     this.loadData(this.$route.params.id);
   },
   activated() {
-    if (this.show) {
-      if (this.artist.id.toString() !== this.$route.params.id) {
-        this.show = false;
-        NProgress.start();
-        this.loadData(this.$route.params.id);
-      }
+    if (this.artist?.id?.toString() !== this.$route.params.id) {
+      this.loadData(this.$route.params.id);
+    } else {
+      this.$parent.$refs.scrollbar.restorePosition();
     }
   },
   methods: {
     ...mapMutations(['appendTrackToPlayerList']),
     ...mapActions(['playFirstTrackOnList', 'playTrackOnListByID', 'showToast']),
     loadData(id, next = undefined) {
+      NProgress.start();
+      this.show = false;
+      this.$parent.$refs.main.scrollTo({ top: 0 });
       getArtist(id).then(data => {
         this.artist = data.artist;
         this.popularTracks = data.hotSongs;
@@ -354,6 +355,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.artist-page {
+  margin-top: 32px;
+}
+
 .artist-info {
   display: flex;
   align-items: center;

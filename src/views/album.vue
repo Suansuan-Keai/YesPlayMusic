@@ -1,5 +1,5 @@
 <template>
-  <div v-show="show" class="album">
+  <div v-show="show" class="album-page">
     <div class="playlist-info">
       <Cover
         :id="album.id"
@@ -206,6 +206,11 @@ export default {
       }
     },
   },
+  watch: {
+    album: function () {
+      this.$parent.$refs.main.scrollTo({ top: 0 });
+    },
+  },
   created() {
     this.loadData(this.$route.params.id);
   },
@@ -299,6 +304,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.album-page {
+  margin-top: 32px;
+}
 .playlist-info {
   display: flex;
   width: 78vw;
