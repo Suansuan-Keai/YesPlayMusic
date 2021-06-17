@@ -110,7 +110,9 @@ export default {
   },
   methods: {
     loadData() {
-      if (!this.show) NProgress.start();
+      setTimeout(() => {
+        if (!this.show) NProgress.start();
+      }, 1000);
       recommendPlaylist({
         limit: 10,
       }).then(data => {
@@ -119,12 +121,22 @@ export default {
         this.show = true;
       });
       newAlbums({
-        area: 'EA',
+        area: this.settings.musicLanguage ?? 'ALL',
         limit: 10,
       }).then(data => {
         this.newReleasesAlbum.items = data.albums;
       });
-      toplistOfArtists(2).then(data => {
+
+      const toplistOfArtistsAreaTable = {
+        all: null,
+        zh: 1,
+        ea: 2,
+        jp: 4,
+        kr: 3,
+      };
+      toplistOfArtists(
+        toplistOfArtistsAreaTable[this.settings.musicLanguage ?? 'all']
+      ).then(data => {
         let indexs = [];
         while (indexs.length < 6) {
           let tmp = ~~(Math.random() * 100);

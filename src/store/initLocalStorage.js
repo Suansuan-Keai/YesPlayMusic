@@ -1,4 +1,5 @@
 import { playlistCategories } from '@/utils/staticData';
+import shortcuts from '@/utils/shortcuts';
 
 console.debug('[debug][initLocalStorage.js]');
 const enabledPlaylistCategories = playlistCategories
@@ -9,6 +10,7 @@ let localStorage = {
   player: {},
   settings: {
     lang: null,
+    musicLanguage: 'all',
     appearance: 'auto',
     musicQuality: 320000,
     lyricFontSize: 28,
@@ -30,6 +32,7 @@ let localStorage = {
       server: '',
       port: null,
     },
+    shortcuts: shortcuts,
   },
   data: {
     user: {},

@@ -107,7 +107,7 @@
       :close="toggleFullDescription"
       :show-footer="false"
       :click-outside-hide="true"
-      title="专辑介绍"
+      :title="$t('album.albumDesc')"
     >
       <p class="description-fulltext">
         {{ album.description }}
@@ -137,7 +137,6 @@ import locale from '@/locale';
 import { splitSoundtrackAlbumTitle, splitAlbumTitle } from '@/utils/common';
 import NProgress from 'nprogress';
 import { isAccountLoggedIn } from '@/utils/auth';
-import { disableScrolling, enableScrolling } from '@/utils/ui';
 
 import ExplicitSymbol from '@/components/ExplicitSymbol.vue';
 import ButtonTwoTone from '@/components/ButtonTwoTone.vue';
@@ -159,12 +158,13 @@ export default {
     ContextMenu,
   },
   beforeRouteUpdate(to, from, next) {
-    NProgress.start();
+    this.show = false;
     this.loadData(to.params.id);
     next();
   },
   data() {
     return {
+      show: false,
       album: {
         id: 0,
         picUrl: '',
@@ -174,7 +174,6 @@ export default {
       },
       tracks: [],
       showFullDescription: false,
-      show: false,
       moreAlbums: [],
       dynamicDetail: {},
       subtitle: '',
@@ -204,11 +203,6 @@ export default {
       } else {
         return [...realAlbums, ...restItems].slice(0, 5);
       }
-    },
-  },
-  watch: {
-    album: function () {
-      this.$parent.$refs.main.scrollTo({ top: 0 });
     },
   },
   created() {
@@ -256,6 +250,9 @@ export default {
       }
     },
     loadData(id) {
+      setTimeout(() => {
+        if (!this.show) NProgress.start();
+      }, 1000);
       getAlbum(id).then(data => {
         this.album = data.album;
         this.tracks = data.songs;
@@ -281,9 +278,9 @@ export default {
     toggleFullDescription() {
       this.showFullDescription = !this.showFullDescription;
       if (this.showFullDescription) {
-        disableScrolling();
+        this.$store.commit('enableScrolling', false);
       } else {
-        enableScrolling();
+        this.$store.commit('enableScrolling', true);
       }
     },
     openMenu(e) {

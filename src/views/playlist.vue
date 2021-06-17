@@ -231,7 +231,6 @@ import { getTrackDetail } from '@/api/track';
 import { isAccountLoggedIn } from '@/utils/auth';
 import nativeAlert from '@/utils/nativeAlert';
 import locale from '@/locale';
-import { disableScrolling, enableScrolling } from '@/utils/ui';
 
 import ButtonTwoTone from '@/components/ButtonTwoTone.vue';
 import ContextMenu from '@/components/ContextMenu.vue';
@@ -407,6 +406,9 @@ export default {
     } else {
       this.loadData(this.$route.params.id);
     }
+    setTimeout(() => {
+      if (!this.show) NProgress.start();
+    }, 1000);
   },
   methods: {
     ...mapMutations(['appendTrackToPlayerList']),
@@ -531,9 +533,9 @@ export default {
     toggleFullDescription() {
       this.showFullDescription = !this.showFullDescription;
       if (this.showFullDescription) {
-        disableScrolling();
+        this.$store.commit('enableScrolling', false);
       } else {
-        enableScrolling();
+        this.$store.commit('enableScrolling', true);
       }
     },
   },

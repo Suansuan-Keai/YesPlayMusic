@@ -7,7 +7,7 @@
     >
       <div
         v-if="
-          (settings.lyricsBackground === 'blue') |
+          (settings.lyricsBackground === 'blur') |
             (settings.lyricsBackground === 'dynamic')
         "
         class="lyrics-background"
@@ -204,7 +204,6 @@ import VueSlider from 'vue-slider-component';
 import { formatTrackTime } from '@/utils/common';
 import { getLyric } from '@/api/track';
 import { lyricParser } from '@/utils/lyrics';
-import { disableScrolling, enableScrolling } from '@/utils/ui';
 import ButtonIcon from '@/components/ButtonIcon.vue';
 import * as Vibrant from 'node-vibrant';
 import Color from 'color';
@@ -295,10 +294,10 @@ export default {
     showLyrics(show) {
       if (show) {
         this.setLyricsInterval();
-        disableScrolling();
+        this.$store.commit('enableScrolling', false);
       } else {
         clearInterval(this.lyricsInterval);
-        enableScrolling();
+        this.$store.commit('enableScrolling', true);
       }
     },
   },
@@ -378,15 +377,9 @@ export default {
       Vibrant.from(cover, { colorCount: 1 })
         .getPalette()
         .then(palette => {
-          const color = Color.rgb(palette.DarkMuted._rgb)
-            .darken(0.1)
-            .rgb()
-            .string();
-          const color2 = Color.rgb(palette.DarkMuted._rgb)
-            .lighten(0.28)
-            .rotate(-30)
-            .rgb()
-            .string();
+          const orignColor = Color.rgb(palette.DarkMuted._rgb);
+          const color = orignColor.darken(0.1).rgb().string();
+          const color2 = orignColor.lighten(0.28).rotate(-30).rgb().string();
           this.background = `linear-gradient(to top left, ${color}, ${color2})`;
         });
     },
