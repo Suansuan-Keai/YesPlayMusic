@@ -151,16 +151,22 @@ export default {
     clearSongsCache: 'Clear Songs Cache',
     cacheCount: 'Cached {song} songs ({size})',
     showLyricsTranslation: 'Show lyrics translation',
-    minimizeToTray: 'Minimize to tray',
     showPlaylistsByAppleMusic: 'Show playlists by Apple Music',
     enableDiscordRichPresence: 'Enable Discord Rich Presence',
     enableGlobalShortcut: 'Enable Global Shortcut',
     showLibraryDefault: 'Show library default',
+    subTitleDefault: 'Sub title alia default',
     lyricsBackground: {
       text: 'Show Lyrics Background',
       off: 'Off',
       on: 'On',
       dynamic: 'Dynamic (High GPU usage)',
+    },
+    closeAppOption: {
+      text: 'Close App...',
+      ask: 'Ask',
+      exit: 'Exit',
+      minimizeToTray: 'Minimize to tray',
     },
   },
   contextMenu: {

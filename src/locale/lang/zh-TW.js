@@ -153,11 +153,18 @@ export default {
     enableDiscordRichPresence: '啟用 Discord Rich Presence',
     enableGlobalShortcut: '啟用全域快捷鍵',
     showLibraryDefault: '啟動後顯示音樂庫',
+    subTitleDefault: '副標題使用別名',
     lyricsBackground: {
       text: '顯示歌詞背景',
       off: '關閉',
       on: '開啟',
       dynamic: '動態（GPU 占用較高）',
+    },
+    closeAppOption: {
+      text: '關閉主面板時...',
+      ask: '詢問',
+      exit: '退出',
+      minimizeToTray: '最小化到系統列',
     },
   },
   contextMenu: {
